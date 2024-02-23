@@ -1,5 +1,3 @@
-
-
 #!/usr/bin/env python3 
 
 """
@@ -67,3 +65,42 @@ class Queue(object):
         return str(self.q)
     
 
+class Deque(object):
+    """
+    Uses lists to implement class Deque
+    """
+    def __init__(self):
+        self.deque = []
+    
+    def add_front(self, item):
+        self.deque.insert(0, item)
+    
+    def add_rear(self, item):
+        self.deque.append(item)
+    
+    def remove_front(self):
+        return self.deque.pop(0)
+    
+    def remove_rear(self):
+        return self.deque.pop()
+    
+    def size(self):
+        return len(self.deque)
+    
+    def is_empty(self):
+        return len(self.deque) == 0
+    
+    
+def main():
+    s = Stack()
+    s.push("Hello")
+    s.push("Goodbye")
+    print(s.pop())
+    print(s.peek())
+    print(s.size())
+    print(s.is_empty())
+    print(s.pop())
+    print(s.is_empty())
+
+if __name__ == "__main__":
+    main()

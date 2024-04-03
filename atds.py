@@ -6,7 +6,7 @@ This Python program is a library of Python-implementations of Abstract Data Stru
 """
 
 __author__ = "Sharon Chou"
-__version__ = "2024-02-15"
+__version__ = "2024-04-03"
 
 class Stack(object):
     """
@@ -286,19 +286,152 @@ class UnorderedListStack(object):
     def is_empty(self):
         return self.ul.is_empty()
 
+class HashTable():
+    """Describes a has table based on two lists, "slots" and "values", and describes putting and getting values onto that table. Hash function is the mod (%) function, and collisions are handled using linear probing"""
+    ###############################
+
+    def __init__(self, m):
+        """Creates an empty hash table of the size m
+        """
+        self.size = m                       # remember, prime numbers are better
+        self.slots = [None] * self.size     # a list of None keys
+        self.data = [None] * self.size      # a list of None values
+
+###############################
+
+    def hash_function(self, key, size):
+        """This helper method returns the value of the hash function, based on 
+        the key and the size of the table.
+        """
+        return key % size
+
+###############################
+
+    def put(self, key, value):
+        """Places a key-value pair in the hash table (different key, collision => put in next available slot), or replaces the current value if the key already exists in the table (same key, diff value => replace old value)
+        """
+        location = self.hash_function(key, self.size)
+        if self.slots[location] == None: #nothing there
+            self.slots[location] = key
+            self.data[location] = value
+        elif self.slots[location] == key: #something is there with the same key
+            self.data[location] == value
+        elif self.slots[location] != None: #something is there with a different key
+            while self.slots[location] != None:
+                location = location + 1
+            self.slots[location] = key
+            self.data[location] = value
+        
+            
+###############################
+
+    def get(self, key):
+        """Tries to find a key-value pair in the hash table (and return the value), or returns
+        None if no key is found.
+        """
+        location = self.hash_function(key, self.size)
+        if self.slots[location] == key:
+            return self.data[location]
+        else:
+            while self.slots[location] != None:
+                if self.slots[location] == key:
+                    return self.data[location]
+                location = location + 1
+        return None
+        
+###############################
+
+    def __repr__(self):
+        """Returns a string representation of the hash table, displayed 
+        as two arrays.
+        """
+        return "Keys:   " + str(self.slots) + "\n" + "Values: " + str(self.data)
+    pass
+    
 def main():
-    n = Node(3)
-    n2 = Node(5)
-    print(n)
-    n.set_next(n2)
-    print(n)
-    ul = UnorderedList()
-    ul.add(3)
-    ul.add(4)
-    print(ul.search(2))
-    print(ul.search(3))
-    print("DEBUG: ") + str(ul)
-    input()
+    tests_passed = 0
+    print("\nTEST: Creating HashTable(11)...")
+    try:
+        h = HashTable(11)
+        tests_passed += 1
+        print("SUCCESS. Table created.")
+    except:
+        print("FAIL. Table not created.")
+
+    print("\nTEST: Using put function to store key-value pairs in table...")
+    try:
+        h.put(1, "a")
+        h.put(6, "e")
+        h.put(9, "f")
+        h.put(12, "b")
+        h.put(23, "c")
+        tests_passed += 1
+        print("SUCCESS. .put() method called with 5 values.")
+    except:
+        print("FAIL. Problem with .put() method.")
+
+    print("\nTEST: Trying to print the current state of table:")
+    try:
+        print(h)
+        print("Should look something like:")
+        print("Keys:   [None, 1, 12, 23, None, None, 6, None, None, 9, None]")
+        print("Values: [None, 'a', 'b', 'c', None, None, 'e', None, None, 'f', None]")
+        tests_passed += 1
+    except:
+        print("FAIL. Couldn't print using __str__ or __repr__")
+        
+
+
+    print("\nTEST: Looking for original hash in table..")
+    try:
+        result = h.get(9)
+        tests_passed += 1
+        print("SUCCESS. .get() method called.")
+        if result == "f":
+            tests_passed += 1
+            print("SUCCESS. Correct value returned.")
+        else:
+            print("FAIL. Incorrect value returned.")
+    except:
+        print("FAIL. Problem with .get() method.")
+
+    print("\nTEST: Looking for collision in table..")
+    try:
+        result = h.get(23)
+        tests_passed += 1
+        print("SUCCESS. .get() method called.")
+        if result == "c":
+            tests_passed += 1
+            print("SUCCESS. Correct value returned.")
+        else:
+            print("FAIL. Incorrect value returned.")
+    except:
+        print("FAIL. Problem with .get() method.")
+
+    print("\nTEST: Looking for original hash not in table..")
+    try:
+        result = h.get(14)
+        if result == None:
+            tests_passed += 1
+            print("SUCCESS. Non-existent value not found.")
+        else:
+            print("FAIL. Non-existent value found.")
+    except:
+        print("FAIL. Problem with .get() method.")
+
+    print("\nTEST: Looking for collision not in table..")
+    try:
+        result = h.get(45)
+        if result == None:
+            tests_passed += 1
+            print("SUCCESS. Non-existent collision not found.")
+        else:
+            print("FAIL. Non-existent collision found.")
+    except:
+        print("FAIL. Problem with .get() method.")
+
+    print("\nResults:")
+    print(tests_passed,"/ 9 tests passed")
 
 if __name__ == "__main__":
     main()

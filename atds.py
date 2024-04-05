@@ -6,7 +6,7 @@ This Python program is a library of Python-implementations of Abstract Data Stru
 """
 
 __author__ = "Sharon Chou"
-__version__ = "2024-04-03"
+__version__ = "2024-04-03 (latest version)"
 
 class Stack(object):
     """
@@ -348,90 +348,85 @@ class HashTable():
         return "Keys:   " + str(self.slots) + "\n" + "Values: " + str(self.data)
     pass
     
-def main():
-    tests_passed = 0
-    print("\nTEST: Creating HashTable(11)...")
-    try:
-        h = HashTable(11)
-        tests_passed += 1
-        print("SUCCESS. Table created.")
-    except:
-        print("FAIL. Table not created.")
-
-    print("\nTEST: Using put function to store key-value pairs in table...")
-    try:
-        h.put(1, "a")
-        h.put(6, "e")
-        h.put(9, "f")
-        h.put(12, "b")
-        h.put(23, "c")
-        tests_passed += 1
-        print("SUCCESS. .put() method called with 5 values.")
-    except:
-        print("FAIL. Problem with .put() method.")
-
-    print("\nTEST: Trying to print the current state of table:")
-    try:
-        print(h)
-        print("Should look something like:")
-        print("Keys:   [None, 1, 12, 23, None, None, 6, None, None, 9, None]")
-        print("Values: [None, 'a', 'b', 'c', None, None, 'e', None, None, 'f', None]")
-        tests_passed += 1
-    except:
-        print("FAIL. Couldn't print using __str__ or __repr__")
+class BinaryTree(object):
+    """Constructs a binary tree"""
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
         
-
-
-    print("\nTEST: Looking for original hash in table..")
-    try:
-        result = h.get(9)
-        tests_passed += 1
-        print("SUCCESS. .get() method called.")
-        if result == "f":
-            tests_passed += 1
-            print("SUCCESS. Correct value returned.")
-        else:
-            print("FAIL. Incorrect value returned.")
-    except:
-        print("FAIL. Problem with .get() method.")
-
-    print("\nTEST: Looking for collision in table..")
-    try:
-        result = h.get(23)
-        tests_passed += 1
-        print("SUCCESS. .get() method called.")
-        if result == "c":
-            tests_passed += 1
-            print("SUCCESS. Correct value returned.")
-        else:
-            print("FAIL. Incorrect value returned.")
-    except:
-        print("FAIL. Problem with .get() method.")
-
-    print("\nTEST: Looking for original hash not in table..")
-    try:
-        result = h.get(14)
-        if result == None:
-            tests_passed += 1
-            print("SUCCESS. Non-existent value not found.")
-        else:
-            print("FAIL. Non-existent value found.")
-    except:
-        print("FAIL. Problem with .get() method.")
-
-    print("\nTEST: Looking for collision not in table..")
-    try:
-        result = h.get(45)
-        if result == None:
-            tests_passed += 1
-            print("SUCCESS. Non-existent collision not found.")
-        else:
-            print("FAIL. Non-existent collision found.")
-    except:
-        print("FAIL. Problem with .get() method.")
-
-    print("\nResults:")
-    print(tests_passed,"/ 9 tests passed")
+    def __repr__(self):
+        return "BinaryTree[key=" + str(self.val) + \
+               ",left_child=" + str(self.left) + \
+               ",right_child=" + str(self.right) + "]"
+    
+    def get_root_val(self):
+        return self.val
+    
+    def set_root_val(self, val):
+        self.val = val
+        
+    def get_left_child(self):
+        return self.left
+    
+    def get_right_child(self):
+        return self.right
+    
+    def insert_left(self, val):
+        new_subtree = BinaryTree(val)
+        new_subtree.left = self.left
+        self.left = new_subtree
+    
+    def insert_right(self, val):
+        new_subtree = BinaryTree(val)
+        new_subtree.right = self.right
+        self.right = new_subtree
+        
+def main():
+    print("Testing the binary_tree_class file!")
+    bt = BinaryTree(3)
+    print("Instruction: bt = BinaryTree(3)")
+    print("Result:", bt)
+    print("Expect: BinaryTree[key=3,left_child=None,right_child=None]")
+    print()
+    bt.insert_left(4)
+    print("Instruction: bt.insert_left(t4)")
+    print("Result:", bt)
+    print("Expect: BinaryTree[key=3,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None]")
+    print()
+    bt.insert_left(5)
+    print("Instruction: bt.insert_left(5)")
+    print("Result:", bt)
+    print("Expect: BinaryTree[key=3,left_child=BinaryTree[key=5,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None],right_child=None]")
+    print()
+    bt.insert_right(6)
+    print("Instruction: bt.insert_right(6)")
+    print("Result:", bt)
+    print("Expect: BinaryTree[key=3,left_child=BinaryTree[key=5,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None],right_child=BinaryTree[key=6,left_child=None,right_child=None]]")
+    print()
+    bt.insert_right(7)
+    print("Instruction: bt.insert_right(7)")
+    print("Result:", bt) 
+    print("Expect: BinaryTree[key=3,left_child=BinaryTree[key=5,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None],right_child=BinaryTree[key=7,left_child=None,right_child=BinaryTree[key=6,left_child=None,right_child=None]]]")
+    print()
+    l = bt.get_left_child()
+    print("Instruction: l = bt.get_left_child()")
+    print("Result: l =", l)
+    print("Expect: l = BinaryTree[key=5,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None]")
+    print()
+    l.set_root_val(9)
+    print("Instruction: l.set_root_val(9)")
+    print("Result: l =", l)
+    print("Expect: l = BinaryTree[key=9,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None]")
+    print()
+    l.insert_left(11)
+    print("Instruction: l.insert_left(11)")
+    print("Result:", bt)
+    print("Expect: BinaryTree[key=3,left_child=BinaryTree[key=9,left_child=BinaryTree[key=11,left_child=BinaryTree[key=4,left_child=None,right_child=None],right_child=None],right_child=None],right_child=BinaryTree[key=7,left_child=None,right_child=BinaryTree[key=6,left_child=None,right_child=None]]]")
+    print()
+    print("Instruction: print(bt.get_right_child().get_right_child())")
+    print("Result:", bt.get_right_child().get_right_child())
+    print("Expect: BinaryTree[key=6,left_child=None,right_child=None]") 
 
 if __name__ == "__main__":
     main()

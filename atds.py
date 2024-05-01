@@ -6,7 +6,7 @@ This Python program is a library of Python-implementations of Abstract Data Stru
 """
 
 __author__ = "Sharon Chou"
-__version__ = "2024-04-03 (latest version)"
+__version__ = "2024-04-30 (latest version)"
 
 class Stack(object):
     """
@@ -381,6 +381,155 @@ class BinaryTree(object):
         new_subtree = BinaryTree(val)
         new_subtree.right = self.right
         self.right = new_subtree
+        
+class Vertex(object):
+    """Describes a vertex object in terms of a "key" and a
+    dictionary that indicates edges to neighboring vertices with
+    a specified weight.
+    """
+    
+    def __init__(self, key):
+        """Constructs a vertex with a key value and an empty dictionary 
+        in which we'll store other vertices to which this vertex is
+        connected.
+        """
+        self.id = key
+        self.connected_to = {}   # empty dictionary for neighboring vertices
+        self.color = 'white'
+        self.distance = 0
+        self.predecessor = None
+        self.discovery_time = 0     # discovery time
+        self.finish_time = 0        # finish time  
+    
+    def add_neighbor(self, neighbor_vertex, weight=0):
+        """Adds a reference to a neighboring Vertex object to the
+        dictionary, to which this vertex is connected by an edge. 
+        If a weight is not indicated, default weight is 0.
+        """
+        self.connected_to[neighbor_vertex] = weight
+    
+    def set_color(self, color):
+        self.color = color
+    
+    def get_color(self):
+        return self.color
+    
+    def set_distance(self, distance):
+        self.distance = distance
+    
+    def get_distance(self):
+        return self.distance
+    
+    def set_pred(self, predecessor):
+        self.predecessor = predecessor
+    
+    def get_pred(self):
+        return self.predecessor
+    
+    def set_discovery(self, discovery_time):
+        self.discovery_time = discovery_time
+    
+    def get_discovery(self):
+        return self.discovery_time
+    
+    def set_finish(self, finish_time):
+        self.finish_time = finish_time
+    
+    def get_finish(self):
+        return self.finish_time
+    
+    def __repr__(self):
+        """Returns a representation of the vertex and its neighbors,
+        suitable for printing. Check out the example of 'list
+        comprehension' here!
+        """
+        return 'Vertex[id=' + str(self.id) \
+                + ',color=' + self.color \
+                + ',dist=' + str(self.distance) \
+                + ',pred=' + str(self.predecessor) \
+                + ',disc=' + str(self.discovery_time) \
+                + ',fin=' + str(self.finish_time) \
+              + '] connected_to: ' + str([x.id for x in self.connected_to]) 
+    
+    def get_connections(self):
+        """Returns the keys of the vertices we're connected to
+        """
+        return self.connected_to.keys()
+    
+    def get_id(self):
+        """Returns the id ("key") for this vertex
+        """
+        return self.id
+    
+    def get_weight(self, neighbor_vertex):
+        """Returns the weight of an edge connecting this vertex 
+        with another.
+        """
+        return self.connected_to[neighbor_vertex]
+    
+class Graph(object):
+    """Describes the Graph class, which is primarily a dictionary
+    mapping vertex names to Vertex objects, along with a few methods
+    that can be used to manipulate them.
+    """
+    def __init__(self):
+        """Initializes an empty dictionary of Vertex objects
+        """
+        self.graph = {}
+
+    def add_vertex(self, key):
+        """Creates a new "key-value" dictionary entry with the string "key"
+        key as the dictionary key, and the Vertex object itself as the value.
+        Returns the new vertex as a result.
+        """
+        new_vertex = Vertex(key)
+        self.graph[key] = new_vertex
+        return new_vertex
+
+    def get_vertex(self, key):
+        """Looks for the key in the dictionary of Vertex objects, and
+        returns the Vertex if found. Otherwise, returns None.
+        """
+        if key in self.graph.keys():
+            return self.graph[key]
+        else:
+            return None
+
+    def __contains__(self, key):
+        """This 'dunder' expression is written so we can use Python's "in"
+        operation: If the parameter 'key' is in the dictionary of vertices,
+        the value of "key in my_graph" will be True, otherwise False.
+        """
+        return key in self.graph.keys()
+
+    def add_edge(self, from_key, to_key, weight=0):
+        """Adds an edge connecting two vertices (specified by key
+        parameters) by modifying those vertex objects. Note that
+        the weight can be specified as well, but if one isn't
+        specified, the value of weight will be the default value
+        of 0.
+        """
+        # if the from_key doesn't yet have a vertex, create it
+        if from_key not in self.get_vertices():
+            self.add_vertex(from_key)
+        # if the to_key doesn't yet have a vertex, create it
+        if to_key not in self.get_vertices():
+            self.add_vertex(to_key)
+        # now we can create the edge between the two
+        self.get_vertex(from_key).add_neighbor(self.get_vertex(to_key), weight)
+
+    def get_vertices(self):
+        """Returns a list of the Graph's Vertex keys"""
+        return self.graph.keys()
+
+    def __iter__(self):
+        """Another 'dunder' expression that allows us to iterate through
+        the list of vertices.
+        Example use:
+        for vertex in graph:  # Python understands this now!
+            print(vertex)
+        """
+        return iter(self.graph.values())
         
 def main():
     print("Testing the binary_tree_class file!")
